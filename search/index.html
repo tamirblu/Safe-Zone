@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>חיפוש לפי שם, טלפון או יוזר</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f6fa;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    main.content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0;
+      width: 100%;
+      margin: 0 auto;
+      max-width: 1200px;
+    }
+    .search-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      padding: 0;
+      box-shadow: none;
+      border-radius: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .search-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      text-align: center;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .search-header h2 {
+      margin: 0 0 10px 0;
+      text-align: center;
+      width: 100%;
+    }
+    .search-input {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1em;
+      background: #f9fafb;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+    .search-input:focus {
+      border: 1.5px solid #2d3e50;
+      outline: none;
+    }
+    .result-count {
+      text-align: center;
+      width: 100%;
+      margin-top: 10px;
+      font-size: 1.2em;
+      font-weight: 500;
+      color: #2d3e50;
+    }
+    .table-container {
+      width: 100%;
+      max-width: 1200px;
+      overflow-x: auto;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 2px solid #7b4ae0;
+      border-radius: 0;
+      margin: 0 auto;
+      text-align: center;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: center;
+      border-right: 1px solid #7b4ae0;
+      border-left: 1px solid #7b4ae0;
+    }
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #2d3e50;
+      border-bottom: 3px solid #7b4ae0;
+      text-align: center;
+    }
+    tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+    tr:hover {
+      background: #f0f2f5;
+    }
+    @media (max-width: 768px) {
+      .search-container {
+        max-width: 100%;
+        padding: 0;
+      }
+      main.content {
+        padding: 0;
+      }
+      .search-header {
+        padding: 10px;
+        max-width: 100%;
+      }
+      .table-container {
+        max-width: 100%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1>חיפוש לפי שם, טלפון או יוזר</h1>
+            <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
+                <div class="nav-links">
+                    <button><a href="../home_page/" class="nav-link">בית</a></button>
+                    <button><a href="../about/" class="nav-link">אודות</a></button>
+                    <button><a href="../search/" class="nav-link active">חיפוש</a></button>
+                    <button><a href="../sign_in/" class="nav-link">הוסף דיווח</a></button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="content">
+        <div class="search-container">
+            <div class="search-header">
+                <h2>🔎 הזן שם, מספר טלפון או שם משתמש בפייסבוק/אינסטגרם</h2>
+                <input type="text" id="searchInput" class="search-input" placeholder="חפש לפי שם, טלפון, פייסבוק או אינסטגרם">
+                <div class="result-count" id="resultCount"></div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>שם</th>
+                            <th>טלפון</th>
+                            <th>עיר</th>
+                            <th>דווח כעויין</th>
+                            <th>מספר דיווחים</th>
+                            <th>פייסבוק</th>
+                            <th>אינסטגרם</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results">
+                        <!-- תוצאות יוזנו כאן ע"י JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script>
+    let data = [];
+    async function loadData() {
+        try {
+            const response = await fetch('/get-data'); 
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+            }
+            const jsonData = await response.json();
+            data = jsonData.hostile;
+        } catch (error) {
+            console.error('Error loading data in loadData function:', error);
+            data = [];
+        }
+    }
+
+    (async () => {
+        await loadData();
+        renderResults(data);
+    })();
+
+    function normalizePhone(phone) {
+      return phone.replace(/[-\s]/g, '').replace(/^972/, '0');
+    }
+
+    function search(term) {
+      term = term.toLowerCase().trim();
+      const normalizedTerm = normalizePhone(term);
+      return data.filter(item => {
+        const nameMatch = item.UserName.toLowerCase().includes(term);
+        const phoneMatch = normalizePhone(item.UserTeam).includes(normalizedTerm);
+        const fbMatch = item.UserFace && item.UserFace.toLowerCase().includes(term);
+        const igMatch = item.UserPosition && item.UserPosition.toLowerCase().includes(term);
+        return nameMatch || phoneMatch || fbMatch || igMatch;
+      });
+    }
+
+    function renderResults(results) {
+      const resultsContainer = document.getElementById("results");
+      const resultCount = document.getElementById("resultCount");
+      if (!results || results.length === 0) {
+        resultsContainer.innerHTML = `<tr><td colspan="7" class="no-results" style="text-align:center; padding:20px; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;">לא נמצאו תוצאות</td></tr>`;
+        resultCount.innerText = '';
+        return;
+      }
+      resultCount.innerText = `נמצאו ${results.length} תוצאות`;
+      resultsContainer.innerHTML = results.map(item => `
+        <tr style="border:none;">
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.UserName || 'לא צוין'}</td>
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.UserTeam || 'לא צוין'}</td>
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.UserTEARIM || 'לא צוין'}</td>
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.isHostile !== undefined ? item.isHostile : 'לא זמין'}</td>
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.reportCount !== undefined ? item.reportCount : 'לא זמין'}</td>
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.UserFace || 'לא צוין'}</td>
+          <td style='padding:10px 0; text-align:center; border-right:1px solid #7b4ae0; border-left:1px solid #7b4ae0;'>${item.UserPosition || 'לא צוין'}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const value = this.value.trim();
+      if (value === "") {
+        renderResults(data);
+        return;
+      }
+      const results = search(value);
+      renderResults(results);
+    });
+    </script>
+</body>
+</html>

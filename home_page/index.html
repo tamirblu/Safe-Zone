@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>האתר שלי</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1> Safe - Zone  </h1>
+            <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
+                <div class="nav-links">
+                    <button><a href="../home_page/" class="nav-link active">בית</a></button>
+                    <button><a href="../about/" class="nav-link">אודות</a></button>
+                    <button><a href="../search/" class="nav-link">חיפוש</a></button>
+                    <button><a href="../sign_in/" class="nav-link">הוסף דיווח</a></button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="hero-section">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h2 class="hero-title">היי ברוכים הבאים לאתר שלנו!</h2>
+                <p class="hero-description">האתר שלנו הוא פלטפורמה חדשנית שמסייעת בזיהוי מספרי טלפון של אנשים עוינים, כדי למנוע טעויות בזיהוי ולשפר את הדיוק והבטיחות. המערכת שלנו מתעדכנת כל הזמן ומאפשרת לך לקבל מידע אמין במהירות ובקלות. אנחנו כאן כדי להפוך את הזיהוי לפשוט, נגיש ומדויק יותר.</p>
+                <div class="hero-actions">
+                    <a href="../search/" class="hero-btn primary">חפש מספר טלפון</a>
+                    <a href="../about/" class="hero-btn secondary">למד עוד</a>
+                </div>
+            </div>
+            <div class="hero-features">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>חיפוש מהיר</h3>
+                    <p>בדוק מספרי טלפון במאגר הנתונים שלנו תוך שניות</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>מידע מהימן</h3>
+                    <p>מאגר מתעדכן כל הזמן עם דיווחים ממקורות אמינים</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>קל לשימוש</h3>
+                    <p>ממשק פשוט ונוח לשימוש מכל מכשיר</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+            });
+            
+            if (currentPage === '' || currentPage === 'index.html') {
+                document.querySelector('a[href="../home_page/"]').classList.add('active');
+                document.querySelector('a[href="../home_page/"]').setAttribute('aria-current', 'page');
+            }
+        });
+    </script>
+</body>
+</html>

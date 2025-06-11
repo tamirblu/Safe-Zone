@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        form div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            padding: 0.8rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2c3e50;
+            box-shadow: 0 0 5px rgba(44, 62, 80, 0.3);
+        }
+
+        button[type="submit"] {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: fit-content;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #34495e;
+        }
+
+        .navbar {
+            background-color: #ecf0f1;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .nav-links button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #34495e;
+        }
+
+        .nav-links a.active {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+        }
+    </style>
+    <script>
+        async function saveFormData(event) {
+            event.preventDefault();
+            
+            // Get all form data  
+            const formData = {
+                id: Date.now(), // Add unique ID for each entry
+                UserName: document.querySelector('input[name="UserName"]').value,
+                UserTeam: document.querySelector('input[name="UserTeam"]').value,
+                UserTEARIM: document.querySelector('input[name="UserTEARIM"]').value,
+                UserPosition: document.querySelector('input[name="UserPosition"]').value,
+                UserFace: document.querySelector('input[name="UserFace"]').value,
+                submissionDate: new Date().toISOString()
+            };
+
+            try {
+                // Send the data to the server to save in JSON file
+                const response = await fetch('/save-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    // Handle file separately
+                    const fileInput = document.querySelector('input[name="Userimage"]');
+                    if (fileInput.files.length > 0) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            formData.UserImage = e.target.result;
+                            // After saving image, redirect
+                            window.location.href = '../search';
+                        };
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        // If no image, redirect immediately
+                        window.location.href = '../search';
+                    }
+                } else {
+                    alert('שגיאה בשמירת הנתונים. אנא נסה שוב.');
+                }
+            } catch (error) {
+                console.error('Error saving data:', error);
+                alert('שגיאה בשמירת הנתונים. אנא נסה שוב.');
+            }
+        }
+
+        // Load saved data when page loads (in case user comes back)
+        window.onload = function() {
+            const savedData = localStorage.getItem('formData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                document.querySelector('input[name="UserName"]').value = formData.UserName || '';
+                document.querySelector('input[name="UserTeam"]').value = formData.UserTeam || '';
+                document.querySelector('input[name="UserTEARIM"]').value = formData.UserTEARIM || '';
+                document.querySelector('input[name="UserPosition"]').value = formData.UserPosition || '';
+                document.querySelector('input[name="UserFace"]').value = formData.UserFace || '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1>העלאת עוין</h1>
+        </div>
+    </header>
+    <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
+        <div class="navbar-container">
+            <div class="nav-links">
+                <button><a href="../home_page/" class="nav-link" aria-current="page">בית</a></button>
+                <button><a href="../about/" class="nav-link">אודות</a></button>
+                <button><a href="../search/" class="nav-link">חיפוש</a></button>
+                <button><a href="../sign_in/" class="nav-link">הוסף דיווח</a></button>
+            </div>
+        </div>
+    </nav>
+    <main class="content">
+        <form onsubmit="saveFormData(event)" enctype="multipart/form-data">
+            <div>
+                <label> שם העוין</label>
+                <input type="text" name="UserName">
+            </div>
+            <div>
+                <label> מספר טלפון </label>
+                <input type="text" name="UserTeam">
+            </div>
+            <div>
+                <label>  עיר</label>
+                <input type="text" name="UserTEARIM">
+            </div>
+            <div>
+                <label> אינסטגרם </label>
+                <input type="text" name="UserPosition">
+            </div>
+            <div>
+                <label> פייסבוק </label>
+                <input type="text" name="UserFace">
+            </div>
+            <div>
+                <label> תמונה שמראה שאכן הוא תקף </label>
+                <input type="file" name="Userimage" accept="image/*">
+            </div>
+            <button type="submit">העלה עוין</button>
+        </form>
+    </main>
+    <script>
+        // סקריפט להוספת סימון לכפתור הפעיל
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+            });
+            if (currentPage === '' || currentPage === 'index.html') {
+                document.querySelector('a[href="../home_page/"]').classList.add('active');
+                document.querySelector('a[href="../home_page/"]').setAttribute('aria-current', 'page');
+            } else if (currentPage === 'about.html') {
+                document.querySelector('a[href="../about/"]').classList.add('active');
+                document.querySelector('a[href="../about/"]').setAttribute('aria-current', 'page');
+            } else if (currentPage === 'search.html') {
+                document.querySelector('a[href="../search/"]').classList.add('active');
+                document.querySelector('a[href="../search/"]').setAttribute('aria-current', 'page');
+            } else if (currentPage === 'sign_in.html') {
+                document.querySelector('a[href="../sign_in/"]').classList.add('active');
+                document.querySelector('a[href="../sign_in/"]').setAttribute('aria-current', 'page');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אודות הפרויקט – זיהוי עוינות ברשת</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1>אודות הפרויקט – זיהוי עוינות ברשת</h1>
+            <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
+                <div class="nav-links">
+                    <button><a href="../home_page/" class="nav-link">בית</a></button>
+                    <button><a href="../about/" class="nav-link active">אודות</a></button>
+                    <button><a href="../search/" class="nav-link">חיפוש</a></button>
+                    <button><a href="../sign_in/" class="nav-link">הוסף דיווח</a></button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="content">
+        <h1>🤖 אודות הפרויקט – זיהוי עוינות ברשת בעזרת בינה מלאכותית</h1>
+        <section>
+          <h2>תקציר</h2>
+          <p>פרויקט זה עוסק בזיהוי התנהגויות עוינות ברשת באמצעות טכנולוגיות בינה מלאכותית. המטרה היא לשלב בין חדשנות טכנולוגית לבין אחריות חברתית, תוך שמירה מלאה על פרטיות ואתיקה.</p>
+        </section>
+        <section>
+          <h2>🎯 מטרות הפרויקט</h2>
+          <ul>
+            <li>לזהות דפוסים של התנהגות פוגענית ברשת.</li>
+            <li>להבין את יתרונות ומגבלות השימוש בבינה מלאכותית בתחום זה.</li>
+            <li>לקדם מודעות ציבורית לשימוש אחראי בטכנולוגיה.</li>
+            <li>להבטיח פרטיות מלאה של המשתמשים.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>🛠 מה המערכת עושה בפועל</h2>
+          <ul>
+            <li>מזהה תכנים עוינים בטקסטים, תמונות או דוא"ל.</li>
+            <li>מבצעת ניתוחים לצורכי לימוד ומחקר בלבד.</li>
+            <li>לא נשמר מידע אישי – הכל מתבצע בתנאים מבוקרים ומאובטחים.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>⚖ עקרונות העבודה שלנו</h2>
+          <ul>
+            <li><strong>אתיקה:</strong> המערכת לא שופטת, לא מתייגת ולא פוגעת באף אדם.</li>
+            <li><strong>🔐 פרטיות:</strong> הנתונים מועברים למסד נתונים מאובטח, המשמש רק לצורכי התרעה והגנה, לא לזיהוי אישי.</li>
+          </ul>
+        </section>
+        <section>
+          <h2>💡 טכנולוגיה בשירות החברה</h2>
+          <p>הפרויקט מדגים כיצד ניתן להשתמש בבינה מלאכותית לקידום הבנה אנושית והתמודדות עם בעיות חברתיות ברשת – באחריות, בבטיחות וברגישות.</p>
+        </section>
+        <section class="credits">
+          <h2>👥 קרדיטים</h2>
+          <span>פותח ע"י: צוות הפרויקט</span>
+          <span>במסגרת התוכנית: <strong>סטארטאפיסטים</strong> מבית <strong>מחשבה טובה</strong></span>
+          <span>בהנחיית: <strong>המורה טמיר</strong></span>
+          <span>מועד התחלה: <strong>04/05/25</strong></span>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+            });
+            if (currentPage === '' || currentPage === 'index.html') {
+                document.querySelector('a[href="../about/"]').classList.add('active');
+                document.querySelector('a[href="../about/"]').setAttribute('aria-current', 'page');
+            }
+        });
+    </script>
+</body>
+</html>
