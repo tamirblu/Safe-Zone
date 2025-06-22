@@ -3,269 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        form {
-            display: grid;
-            gap: 1.2rem;
-        }
-
-        form div {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        input[type="text"],
-        input[type="file"] {
-            padding: 0.8rem;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #2c3e50;
-            box-shadow: 0 0 5px rgba(44, 62, 80, 0.3);
-        }
-
-        button[type="submit"] {
-            background-color: #2c3e50;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: fit-content;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #34495e;
-        }
-
-        .navbar {
-            background-color: #ecf0f1;
-            padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .navbar-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-        }
-
-        .nav-links {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-
-        .nav-links button {
-            background: none;
-            border: none;
-            padding: 0.5rem 1rem;
-        }
-
-        .nav-links a {
-            color: #2c3e50;
-            text-decoration: none;
-            font-size: 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #34495e;
-        }
-
-        .nav-links a.active {
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                margin: 1rem;
-                padding: 1rem;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                align-items: flex-end;
-            }
-        }
-    </style>
-    <script>
-        async function saveFormData(event) {
-            event.preventDefault();
-            
-            // Get all form data  
-            const formData = {
-                id: Date.now(), // Add unique ID for each entry
-                UserName: document.querySelector('input[name="UserName"]').value,
-                UserTeam: document.querySelector('input[name="UserTeam"]').value,
-                UserTEARIM: document.querySelector('input[name="UserTEARIM"]').value,
-                UserPosition: document.querySelector('input[name="UserPosition"]').value,
-                UserFace: document.querySelector('input[name="UserFace"]').value,
-                submissionDate: new Date().toISOString()
-            };
-
-            try {
-                // Send the data to the server to save in JSON file
-                const response = await fetch('/save-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                if (response.ok) {
-                    // Handle file separately
-                    const fileInput = document.querySelector('input[name="Userimage"]');
-                    if (fileInput.files.length > 0) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            formData.UserImage = e.target.result;
-                            // After saving image, redirect
-                            window.location.href = '../search';
-                        };
-                        reader.readAsDataURL(fileInput.files[0]);
-                    } else {
-                        // If no image, redirect immediately
-                        window.location.href = '../search';
-                    }
-                } else {
-                    alert('שגיאה בשמירת הנתונים. אנא נסה שוב.');
-                }
-            } catch (error) {
-                console.error('Error saving data:', error);
-                alert('שגיאה בשמירת הנתונים. אנא נסה שוב.');
-            }
-        }
-
-        // Load saved data when page loads (in case user comes back)
-        window.onload = function() {
-            const savedData = localStorage.getItem('formData');
-            if (savedData) {
-                const formData = JSON.parse(savedData);
-                document.querySelector('input[name="UserName"]').value = formData.UserName || '';
-                document.querySelector('input[name="UserTeam"]').value = formData.UserTeam || '';
-                document.querySelector('input[name="UserTEARIM"]').value = formData.UserTEARIM || '';
-                document.querySelector('input[name="UserPosition"]').value = formData.UserPosition || '';
-                document.querySelector('input[name="UserFace"]').value = formData.UserFace || '';
-            }
-        }
-    </script>
+    <title>דיווח על עוין</title>
+    <link rel="stylesheet" href="../shared-styles.css">
 </head>
 <body>
     <header class="header">
         <div class="header-container">
-            <h1>העלאת עוין</h1>
+            <h1>דיווח על עוין</h1>
+            <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
+                <div class="nav-links">
+                    <button><a href="../home_page/" class="nav-link">בית</a></button>
+                    <button><a href="../about/" class="nav-link">אודות</a></button>
+                    <button><a href="../search/" class="nav-link">חיפוש</a></button>
+                    <button><a href="../sign_in/" class="nav-link active">הוסף דיווח</a></button>
+                </div>
+            </nav>
         </div>
     </header>
-    <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
-        <div class="navbar-container">
-            <div class="nav-links">
-                <button><a href="../home_page/" class="nav-link" aria-current="page">בית</a></button>
-                <button><a href="../about/" class="nav-link">אודות</a></button>
-                <button><a href="../search/" class="nav-link">חיפוש</a></button>
-                <button><a href="../sign_in/" class="nav-link">הוסף דיווח</a></button>
+    
+    <main class="content">
+        <div class="content-form">
+            <div id="reporterInfo" class="reporter-info" style="display: none;">
+                <h3>פרטי המדווח</h3>
+                <p><strong>שם:</strong> <span id="reporterName"></span></p>
+                <p><strong>עיר:</strong> <span id="reporterCity"></span></p>
+                <p><strong>מספר דיווחים:</strong> <span id="reportCount"></span></p>
+            </div>
+
+            <div id="noReporterMessage" class="message-box error" style="display: none;">
+                <p>לא נמצא מפגש דיווח תקף. אנא <a href="../sign_in/">חזור לעמוד ההרשמה</a></p>
+            </div>
+
+            <form id="reportForm" onsubmit="submitReport(event)" style="display: none;">
+                <div>
+                    <label>שם העוין *</label>
+                    <input type="text" name="hostileName" required>
+                </div>
+                <div>
+                    <label>מספר טלפון *</label>
+                    <input type="text" name="hostilePhone" required pattern="[0-9\-\s\+]+">
+                </div>
+                <div>
+                    <label>עיר *</label>
+                    <input type="text" name="hostileCity" required>
+                </div>
+                <div>
+                    <label>אינסטגרם</label>
+                    <input type="text" name="hostileInstagram">
+                </div>
+                <div>
+                    <label>פייסבוק</label>
+                    <input type="text" name="hostileFacebook">
+                </div>
+                <div>
+                    <label>תמונת הוכחה * (נדרשת)</label>
+                    <input type="file" name="evidenceImage" accept="image/*" required onchange="previewImage(event)">
+                    <img id="imagePreview" class="image-preview" style="display: none;">
+                </div>
+                <button type="submit" id="submitBtn">שלח דיווח</button>
+            </form>
+
+            <div id="messageBox" class="message-box" style="display: none;">
+                <p id="messageText"></p>
             </div>
         </div>
-    </nav>
-    <main class="content">
-        <form onsubmit="saveFormData(event)" enctype="multipart/form-data">
-            <div>
-                <label> שם העוין</label>
-                <input type="text" name="UserName">
-            </div>
-            <div>
-                <label> מספר טלפון </label>
-                <input type="text" name="UserTeam">
-            </div>
-            <div>
-                <label>  עיר</label>
-                <input type="text" name="UserTEARIM">
-            </div>
-            <div>
-                <label> אינסטגרם </label>
-                <input type="text" name="UserPosition">
-            </div>
-            <div>
-                <label> פייסבוק </label>
-                <input type="text" name="UserFace">
-            </div>
-            <div>
-                <label> תמונה שמראה שאכן הוא תקף </label>
-                <input type="file" name="Userimage" accept="image/*">
-            </div>
-            <button type="submit">העלה עוין</button>
-        </form>
     </main>
+
     <script>
-        // סקריפט להוספת סימון לכפתור הפעיל
+        let currentReporterId = null;
+        let uploadedImageId = null;
+
+        // Extract reporterId from URL parameters
+        function getReporterIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('reporterId');
+        }
+
+        // Load reporter information
+        async function loadReporterInfo() {
+            const reporterId = getReporterIdFromURL();
+            
+            if (!reporterId) {
+                document.getElementById('noReporterMessage').style.display = 'block';
+                return;
+            }
+
+            currentReporterId = reporterId;
+
+            try {
+                const response = await fetch(`/api/reporters/${reporterId}`);
+                const result = await response.json();
+
+                if (response.ok && result.reporter) {
+                    const reporter = result.reporter;
+                    document.getElementById('reporterName').textContent = reporter.reporterName;
+                    document.getElementById('reporterCity').textContent = reporter.reporterCity;
+                    document.getElementById('reportCount').textContent = reporter.reportCount;
+                    document.getElementById('reporterInfo').style.display = 'block';
+                    document.getElementById('reportForm').style.display = 'block';
+                } else {
+                    document.getElementById('noReporterMessage').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading reporter info:', error);
+                document.getElementById('noReporterMessage').style.display = 'block';
+            }
+        }
+
+        // Preview uploaded image
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+            }
+        }
+
+        // Upload image to server
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/api/images/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || 'Failed to upload image');
+            }
+
+            return result.imageId;
+        }
+
+        // Submit report
+        async function submitReport(event) {
+            event.preventDefault();
+
+            if (!currentReporterId) {
+                showMessage('שגיאה: לא נמצא מפגש דיווח תקף', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            showMessage('מעלה תמונה ושולח דיווח...', 'loading');
+
+            try {
+                // Upload image first
+                const fileInput = document.querySelector('input[name="evidenceImage"]');
+                if (!fileInput.files[0]) {
+                    throw new Error('נדרשת תמונת הוכחה');
+                }
+
+                uploadedImageId = await uploadImage(fileInput.files[0]);
+                showMessage('תמונה הועלתה בהצלחה, שולח דיווח...', 'loading');
+
+                // Submit report
+                const reportData = {
+                    reporterId: currentReporterId,
+                    hostileName: document.querySelector('input[name="hostileName"]').value.trim(),
+                    hostilePhone: document.querySelector('input[name="hostilePhone"]').value.trim(),
+                    hostileCity: document.querySelector('input[name="hostileCity"]').value.trim(),
+                    hostileInstagram: document.querySelector('input[name="hostileInstagram"]').value.trim(),
+                    hostileFacebook: document.querySelector('input[name="hostileFacebook"]').value.trim(),
+                    evidenceImageId: uploadedImageId
+                };
+
+                // Validate required fields
+                if (!reportData.hostileName || !reportData.hostilePhone || !reportData.hostileCity) {
+                    throw new Error('אנא מלא את כל השדות החובה');
+                }
+
+                const response = await fetch('/api/reports', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(reportData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showMessage('הדיווח נשלח בהצלחה! תודה על תרומתך לביטחון הקהילה.', 'success');
+                    
+                    // Clear form
+                    document.getElementById('reportForm').reset();
+                    document.getElementById('imagePreview').style.display = 'none';
+                    
+                    // Redirect to search page after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = '../search/';
+                    }, 3000);
+                } else {
+                    throw new Error(result.error || 'שגיאה בשליחת הדיווח');
+                }
+            } catch (error) {
+                console.error('Error submitting report:', error);
+                showMessage(error.message || 'שגיאה בשליחת הדיווח. אנא נסה שוב.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Show message to user
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            const messageText = document.getElementById('messageText');
+            
+            messageText.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            messageBox.style.display = 'block';
+        }
+
+        // Navigation active state
         document.addEventListener('DOMContentLoaded', function() {
-            const currentPage = window.location.pathname.split('/').pop();
+            // Load reporter info when page loads
+            loadReporterInfo();
+
+            // Set active navigation
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
                 link.classList.remove('active');
                 link.removeAttribute('aria-current');
             });
-            if (currentPage === '' || currentPage === 'index.html') {
-                document.querySelector('a[href="../home_page/"]').classList.add('active');
-                document.querySelector('a[href="../home_page/"]').setAttribute('aria-current', 'page');
-            } else if (currentPage === 'about.html') {
-                document.querySelector('a[href="../about/"]').classList.add('active');
-                document.querySelector('a[href="../about/"]').setAttribute('aria-current', 'page');
-            } else if (currentPage === 'search.html') {
-                document.querySelector('a[href="../search/"]').classList.add('active');
-                document.querySelector('a[href="../search/"]').setAttribute('aria-current', 'page');
-            } else if (currentPage === 'sign_in.html') {
-                document.querySelector('a[href="../sign_in/"]').classList.add('active');
-                document.querySelector('a[href="../sign_in/"]').setAttribute('aria-current', 'page');
-            }
         });
     </script>
 </body>

@@ -5,6 +5,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+/mili
+/ariel
+
+
 # Runtime data
 pids
 *.pid

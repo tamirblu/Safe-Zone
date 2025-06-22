@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הוסף דיווח</title>
     <link rel="stylesheet" href="../style.css">
-
 </head>
 <body>
     <header class="header">
@@ -22,87 +21,129 @@
         </div>
     </header>
     <main class="content">
-        <form onsubmit="saveFormData(event)" enctype="multipart/form-data">
+        <form onsubmit="createReporterSession(event)">
             <div>
-                <label>שם המדווח</label>
-                <input type="text" name="UserName">
+                <label>שם המדווח *</label>
+                <input type="text" name="reporterName" required>
             </div>
             <div>
-                <label>מספר טלפון</label>
-                <input type="text" name="UserTeam">
+                <label>מספר טלפון *</label>
+                <input type="text" name="reporterPhone" required pattern="[0-9\-\s\+]+">
             </div>
             <div>
-                <label>עיר</label>
-                <input type="text" name="UserTEARIM">
+                <label>עיר *</label>
+                <input type="text" name="reporterCity" required>
             </div>
             <div>
                 <label>אינסטגרם</label>
-                <input type="text" name="UserPosition">
+                <input type="text" name="reporterInstagram">
             </div>
             <div>
                 <label>פייסבוק</label>
-                <input type="text" name="UserFace">
+                <input type="text" name="reporterFacebook">
             </div>
-            <div>
-                <label>תונה שמראה שאכן הוא תקף</label>
-                <input type="file" name="Userimage" accept="image/*">
-            </div>
-            <button type="submit">המשך לדיווח</button>
+            <button type="submit" id="submitBtn">המשך לדיווח</button>
         </form>
+        
+        <div id="loadingMessage" style="display: none; text-align: center; margin-top: 20px;">
+            <p>יוצר מפגש דיווח...</p>
+        </div>
+        
+        <div id="errorMessage" style="display: none; color: red; text-align: center; margin-top: 20px;">
+            <p></p>
+        </div>
     </main>
+    
     <script>
-        async function saveFormData(event) {
+        async function createReporterSession(event) {
             event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            loadingMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
             const formData = {
-                id: Date.now(),
-                UserName: document.querySelector('input[name="UserName"]').value,
-                UserTeam: document.querySelector('input[name="UserTeam"]').value,
-                UserTEARIM: document.querySelector('input[name="UserTEARIM"]').value,
-                UserPosition: document.querySelector('input[name="UserPosition"]').value,
-                UserFace: document.querySelector('input[name="UserFace"]').value,
-                submissionDate: new Date().toISOString()
+                reporterName: document.querySelector('input[name="reporterName"]').value.trim(),
+                reporterPhone: document.querySelector('input[name="reporterPhone"]').value.trim(),
+                reporterCity: document.querySelector('input[name="reporterCity"]').value.trim(),
+                reporterInstagram: document.querySelector('input[name="reporterInstagram"]').value.trim(),
+                reporterFacebook: document.querySelector('input[name="reporterFacebook"]').value.trim()
             };
+            
+            // Validate required fields
+            if (!formData.reporterName || !formData.reporterPhone || !formData.reporterCity) {
+                showError('אנא מלא את כל השדות החובה');
+                return;
+            }
+            
+            // Validate phone number (basic Israeli phone validation)
+            const phoneRegex = /^[0-9\-\s\+]{9,15}$/;
+            if (!phoneRegex.test(formData.reporterPhone)) {
+                showError('מספר טלפון לא תקין');
+                return;
+            }
+            
             try {
-                const response = await fetch('/save-data', {
+                const response = await fetch('/api/reporters', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(formData)
                 });
-                if (response.ok) {
-                    const fileInput = document.querySelector('input[name="Userimage"]');
-                    if (fileInput && fileInput.files.length > 0) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            formData.UserImage = e.target.result;
-                            window.location.href = '../report/';
-                        };
-                        reader.readAsDataURL(fileInput.files[0]);
-                    } else {
-                        window.location.href = '../report/';
-                    }
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Save reporter ID to localStorage for potential form recovery
+                    localStorage.setItem('currentReporterId', result.reporterId);
+                    localStorage.setItem('reporterData', JSON.stringify(formData));
+                    
+                    // Redirect to report page with reporter ID
+                    window.location.href = `../report/?reporterId=${result.reporterId}`;
                 } else {
-                    alert('שגיאה בשמירת הנתונים. אנא נסה שוב.');
+                    showError(result.error || 'שגיאה ביצירת מפגש דיווח');
                 }
             } catch (error) {
-                console.error('Error saving data:', error);
-                alert('שגיאה בשמירת הנתונים. אנא נסה שוב.');
+                console.error('Error creating reporter session:', error);
+                showError('שגיאה בחיבור לשרת. אנא נסה שוב.');
             }
         }
-
+        
+        function showError(message) {
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            submitBtn.disabled = false;
+            loadingMessage.style.display = 'none';
+            errorMessage.style.display = 'block';
+            errorMessage.querySelector('p').textContent = message;
+        }
+        
+        // Load saved data when page loads (for form recovery)
         window.onload = function() {
-            const savedData = localStorage.getItem('formData');
+            const savedData = localStorage.getItem('reporterData');
             if (savedData) {
-                const formData = JSON.parse(savedData);
-                document.querySelector('input[name="UserName"]').value = formData.UserName || '';
-                document.querySelector('input[name="UserTeam"]').value = formData.UserTeam || '';
-                document.querySelector('input[name="UserTEARIM"]').value = formData.UserTEARIM || '';
-                document.querySelector('input[name="UserPosition"]').value = formData.UserPosition || '';
-                document.querySelector('input[name="UserFace"]').value = formData.UserFace || '';
+                try {
+                    const formData = JSON.parse(savedData);
+                    document.querySelector('input[name="reporterName"]').value = formData.reporterName || '';
+                    document.querySelector('input[name="reporterPhone"]').value = formData.reporterPhone || '';
+                    document.querySelector('input[name="reporterCity"]').value = formData.reporterCity || '';
+                    document.querySelector('input[name="reporterInstagram"]').value = formData.reporterInstagram || '';
+                    document.querySelector('input[name="reporterFacebook"]').value = formData.reporterFacebook || '';
+                } catch (e) {
+                    console.log('Could not load saved data');
+                }
             }
         }
-
+        
+        // Navigation active state
         document.addEventListener('DOMContentLoaded', function() {
             const currentPage = window.location.pathname.split('/').pop();
             const navLinks = document.querySelectorAll('.nav-link');
