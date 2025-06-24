@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>אודות הפרויקט – זיהוי עוינות ברשת</title>
   <link rel="stylesheet" href="../style.css">
+  <style>
+    .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .site-logo {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .site-logo:hover {
+        transform: scale(1.05);
+    }
+    
+    @media (max-width: 768px) {
+        .logo-container {
+            gap: 10px;
+        }
+        
+        .site-logo {
+            width: 40px;
+            height: 40px;
+        }
+    }
+  </style>
 </head>
 <body>
 
@@ -14,6 +46,11 @@
             <h1> Safe - Zone  </h1>
             <nav class="navbar" role="navigation" aria-label="תפריט ראשי">
                 <div class="nav-links">
+                    <button><a href="../home_page/"><div class="logo-container">
+                        <img src="../images/logo.jpeg" 
+                             alt="Safe Zone Logo" 
+                             class="site-logo">
+                    </div></a></button>
                     <button><a href="../home_page/" class="nav-link active">בית</a></button>
                     <button><a href="../about/" class="nav-link">אודות</a></button>
                     <button><a href="../search/" class="nav-link">חיפוש</a></button>
@@ -56,7 +93,7 @@
       <section>
         <h2>⚖ עקרונות העבודה שלנו</h2>
         <ul>
-          <li><strong>אתיקה:</strong> המערכת לא שופטת, לא מתייגת ולא פוגעת באף אדם.</li>
+          <li><strong>👩🏻‍⚖️אתיקה:</strong> המערכת לא שופטת, לא מתייגת ולא פוגעת באף אדם.</li>
           <li><strong>🔐 פרטיות:</strong> הנתונים מועברים למסד נתונים מאובטח, המשמש רק לצורכי התרעה והגנה, לא לזיהוי אישי.</li>
         </ul>
       </section>
@@ -68,9 +105,9 @@
 
       <section class="credits">
         <h2>👥 קרדיטים</h2>
-        <span id="names">פותח ע"י: יהונתן סיבוני,אריאל תורג'מן,עילאי שיקלי,יואב גואטה,רביד וענונו,נויה סופיר,טליה עובדיה,אליאור אדגך  </span>
+        <span id="names">פותח ע"י: יהונתן סיבוני,אריאל תורג'מן,עילאי שיקלי,יואב גואטה,רביד וענונו,נויה סופיר,טליה עובדיה,אליאור אדגך, מילי אמינוב  </span>
         <span>במסגרת התוכנית: <strong>סטארטאפיסטים</strong> מבית <strong>מחשבה טובה</strong></span>
-        <span>בהנחיית: <strong>המורה טמיר</strong></span>
+        <span>בהנחיית: <strong> טמיר בלומברג</strong></span>
         <span>מועד התחלה: <strong>04/05/25</strong></span>
       </section>
 
