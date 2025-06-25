@@ -1,4 +1,4 @@
-require('dotenv').config(); // Load environment variables from .env file at the very top
+require('dotenv').config({ path: '../.env' }); // Load environment variables from .env file in parent directory
 
 const express = require('express');
 const multer = require("multer");
@@ -110,7 +110,7 @@ function generateHostilePersonId(name, phone) {
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({extended: false}));
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '../client')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Multer configuration for file uploads
@@ -131,18 +131,26 @@ const upload = multer({
 });
 
 app.get('/', (req,res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '../client','home_page', 'index.html'));
 });
 app.get('/search', (req,res) => {
-    res.sendFile(path.join(__dirname, 'search', 'index.html'));
+    res.sendFile(path.join(__dirname, '../client', 'search', 'index.html'));
 });
 
 app.get('/home_page', (req,res) => {
-    res.sendFile(path.join(__dirname, 'home_page', 'index.html'));
+    res.sendFile(path.join(__dirname, '../client', 'home_page', 'index.html'));
 });
 
 app.get('/about', (req,res) => {
-    res.sendFile(path.join(__dirname, 'about', 'index.html'));
+    res.sendFile(path.join(__dirname, '../client', 'about', 'index.html'));
+});
+
+app.get('/sign_in', (req,res) => {
+    res.sendFile(path.join(__dirname, '../client', 'sign_in', 'index.html'));
+});
+
+app.get('/report', (req,res) => {
+    res.sendFile(path.join(__dirname, '../client', 'report', 'index.html'));
 });
 
 // === NEW API ENDPOINTS ===
