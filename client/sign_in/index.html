@@ -92,6 +92,11 @@
     </main>
     
     <script>
+        // API Configuration
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? '' // Use relative URLs for local development
+            : 'https://safe-zone-backend.onrender.com'; // Use backend URL for production
+
         async function createReporterSession(event) {
             event.preventDefault();
             
@@ -126,7 +131,7 @@
             }
             
             try {
-                const response = await fetch('/api/reporters', {
+                const response = await fetch(`${API_BASE_URL}/api/reporters`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

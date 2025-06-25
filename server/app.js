@@ -107,7 +107,17 @@ function generateHostilePersonId(name, phone) {
 }
 
 // Express middleware
-app.use(cors());
+const corsOptions = {
+    origin: [
+        'https://safe-zone.onrender.com',
+        ...(process.env.NODE_ENV === 'development' ? ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'] : [])
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, '../client')));
@@ -537,11 +547,17 @@ async function startServer() {
     await connectToMongo();
     app.listen(PORT, () => {
         console.log(`Server listening on port ${PORT}`);
-        console.log(`Main page: http://localhost:${PORT}`);
-        console.log(`Sign-in: http://localhost:${PORT}/sign_in`);
-        console.log(`Search: http://localhost:${PORT}/search`);
-        console.log(`About: http://localhost:${PORT}/about`);
-        console.log(`Home page: http://localhost:${PORT}/home_page`);
+        if (process.env.NODE_ENV === 'production') {
+            console.log('🚀 Server running in production mode');
+            console.log(`Frontend URL: https://safe-zone.onrender.com`);
+            console.log(`Backend URL: https://safe-zone-backend.onrender.com`);
+        } else {
+            console.log(`Main page: http://localhost:${PORT}`);
+            console.log(`Sign-in: http://localhost:${PORT}/sign_in`);
+            console.log(`Search: http://localhost:${PORT}/search`);
+            console.log(`About: http://localhost:${PORT}/about`);
+            console.log(`Home page: http://localhost:${PORT}/home_page`);
+        }
     });
 }
 

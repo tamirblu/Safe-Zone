@@ -82,11 +82,16 @@
     </main>
 
     <script>
+    // API Configuration
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? '' // Use relative URLs for local development
+        : 'https://safe-zone-backend.onrender.com'; // Use backend URL for production
+
     let data = [];
     
     async function loadData() {
         try {
-            const response = await fetch('/api/hostile-persons'); 
+            const response = await fetch(`${API_BASE_URL}/api/hostile-persons`); 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
             }

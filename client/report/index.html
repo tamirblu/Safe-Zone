@@ -107,6 +107,11 @@
     </main>
 
     <script>
+        // API Configuration
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? '' // Use relative URLs for local development
+            : 'https://safe-zone-backend.onrender.com'; // Use backend URL for production
+
         let currentReporterId = null;
         let uploadedImageId = null;
 
@@ -128,7 +133,7 @@
             currentReporterId = reporterId;
 
             try {
-                const response = await fetch(`/api/reporters/${reporterId}`);
+                const response = await fetch(`${API_BASE_URL}/api/reporters/${reporterId}`);
                 const result = await response.json();
 
                 if (response.ok && result.reporter) {
@@ -169,7 +174,7 @@
             const formData = new FormData();
             formData.append('image', file);
 
-            const response = await fetch('/api/images/upload', {
+            const response = await fetch(`${API_BASE_URL}/api/images/upload`, {
                 method: 'POST',
                 body: formData
             });
@@ -222,7 +227,7 @@
                     throw new Error('אנא מלא את כל השדות החובה');
                 }
 
-                const response = await fetch('/api/reports', {
+                const response = await fetch(`${API_BASE_URL}/api/reports`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
