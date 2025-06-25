@@ -1,5 +1,6 @@
 const OpenAI = require("openai");
 const https = require('https');
+// Note: dotenv is loaded in app.js, no need to load it again here
 
 // Configuration constants
 const HOSTILITY_THRESHOLD = 0.0002;
