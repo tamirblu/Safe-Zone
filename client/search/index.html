@@ -68,7 +68,6 @@
                         <th>שם</th>
                         <th>טלפון</th>
                         <th>עיר</th>
-                        <th>עויין</th>
                         <th>דיווחים</th>
                         <th>פייסבוק</th>
                         <th>אינסטגרם</th>
@@ -133,7 +132,7 @@
       const resultCount = document.getElementById("resultCount");
       
       if (!results || results.length === 0) {
-        resultsContainer.innerHTML = `<tr><td colspan="7">לא נמצאו תוצאות</td></tr>`;
+        resultsContainer.innerHTML = `<tr><td colspan="6">לא נמצאו תוצאות</td></tr>`;
         resultCount.textContent = '';
         return;
       }
