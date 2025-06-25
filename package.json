@@ -4,10 +4,10 @@
   "description": "Anonymous reporting system with complete user privacy and evidence tracking",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node server/app.js",
     "test": "node test-setup.js",
     "migrate": "node migrate-data.js",
-    "dev": "node app.js",
+    "dev": "node server/app.js",
     "setup": "node test-setup.js",
     "test-ai": "node test-ai-integration.js"
   },
