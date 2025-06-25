@@ -506,6 +506,25 @@ app.get('/api/hostile-persons/search', async (req, res) => {
     }
 });
 
+// Server IP Check Endpoint (for MongoDB whitelist setup)
+app.get('/api/server-ip', async (req, res) => {
+    try {
+        const serverIP = req.headers['x-forwarded-for'] || 
+                        req.connection.remoteAddress || 
+                        req.socket.remoteAddress ||
+                        (req.connection.socket ? req.connection.socket.remoteAddress : null);
+        
+        res.json({
+            serverIP: serverIP,
+            userAgent: req.headers['user-agent'],
+            timestamp: new Date().toISOString(),
+            message: 'Add this IP to your MongoDB Atlas Network Access whitelist'
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get server IP' });
+    }
+});
+
 // AI Analysis Test Endpoint (for development/testing)
 app.post('/api/test-ai-analysis', async (req, res) => {
     try {
@@ -551,6 +570,12 @@ async function startServer() {
             console.log('🚀 Server running in production mode');
             console.log(`Frontend URL: https://safe-zone.onrender.com`);
             console.log(`Backend URL: https://safe-zone-backend.onrender.com`);
+            
+            // Log server IP for MongoDB whitelist setup
+            console.log('=== MongoDB IP Whitelist Info ===');
+            console.log('Add these IPs to your MongoDB Atlas Network Access:');
+            console.log('- 0.0.0.0/0 (allow all - recommended for cloud deployment)');
+            console.log('- Or check Render logs for specific server IP');
         } else {
             console.log(`Main page: http://localhost:${PORT}`);
             console.log(`Sign-in: http://localhost:${PORT}/sign_in`);
