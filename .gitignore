@@ -8,6 +8,9 @@ pnpm-debug.log*
 /mili
 /ariel
 
+# Plans folder
+plans/
+
 
 # Runtime data
 pids
